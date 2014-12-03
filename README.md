@@ -9,6 +9,8 @@ Vfs is a data driven framework. Sort of... It loads an application configuration
 
 Vfs generarates zero garbage in the global namespace. There is a Vfs() function that accepts some params, nothing more.
 
+index.html
+
 	<!DOCTYPE html>
 	<html>
 		<head>
@@ -19,3 +21,24 @@ Vfs generarates zero garbage in the global namespace. There is a Vfs() function 
 			<script type="text/javascript">Vsf('config.js');</script>
 		</body>
 	</html>
+
+config.js
+
+	Vsf({
+		className: 'site.Site',
+		defaultSeries: 0,
+		series: [
+			{
+				title: 'Подари овечку',
+				videos: [
+					{
+						source: 'video/mouse_wheel.mp4',
+						subtitles: 'subtitles/mouse_wheel.vtt',
+						loop: true,
+						title: 'Use the wheel',
+						link: 'Магазин'
+					}
+				]
+			}
+		]
+	});
