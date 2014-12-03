@@ -3,11 +3,11 @@ Vsf
 
 Video Site Framework
 
-Vfs loads class files asynchronously. It adds new SCRIPT tags to the document header. This approach should work in each and every browser out there. But before actual use all classes have to be loaded. Providing dependencies in a class definition is a necesity.
+Vsf loads class files asynchronously. It adds new SCRIPT tags to the document header. This approach should work in each and every browser out there. But before actual use all classes have to be loaded. Providing dependencies in a class definition is a necesity.
 
-Vfs is a data driven framework. Sort of... It loads an application configuration and feeds it to the top level class instance. This one takes top properties to itself and passes the rest to constructors of other classes. Change the configuration and you'll get maybe a completely different structure of objects.
+Vsf is a data driven framework. Sort of... It loads an application configuration and feeds it to the top level class instance. This one takes top properties to itself and passes the rest to constructors of other classes. Change the configuration and you'll get maybe a completely different structure of objects.
 
-Vfs generarates zero garbage in the global namespace. There is a Vfs() function that accepts some params, nothing more.
+Vsf generarates zero garbage in the global namespace. There is a Vfs() function that accepts some params, nothing more.
 
 index.html
 
@@ -42,3 +42,33 @@ config.js
 			}
 		]
 	});
+
+Vsf is developed with the purpurse to be used for creation of video sites. So all other parts are quite specific. This core part of Vsf may be used for building othe applications.
+
+At present a class definition looks like this.
+
+	Vsf(function(u) { return {
+	meta: {
+		className: 'my.namespace.MyClass',
+		requiredClasses: ['my.namespace.MyDependency'],
+		publicMethodNames: ['doSomthing']
+	}, 
+	members: {
+		init: function(options) {
+
+			this.myProperty = options.myProperty ? options.myProperty : '';
+			
+			this.myComponent = u('create')('my.namespace.MyComponent', options.myComponentOptions);
+
+		},
+		doSomthing: function() {
+
+			this.doSomthingInASecretWay();
+
+		},
+		doSomthingInASecretWay: function() {
+
+			return 'secret';
+			
+		}
+	}}});
