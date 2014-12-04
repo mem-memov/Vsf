@@ -9,6 +9,10 @@ Vsf is a data driven framework. Sort of... It loads an application configuration
 
 Vsf generarates zero garbage in the global namespace. There is a Vfs() function that accepts some params, nothing more.
 
+Vsf supports no class inheritance. It favours composition.
+
+Vsf doesn't hide class members. It injects duck interfaces and offers a report that contains a list of methods that were required by other classes.
+
 index.html
 
 	<!DOCTYPE html>
