@@ -42,11 +42,8 @@ members: {
 		if (this.animated) {
 			this.animation = u('create')('dom.Animation', {
 				node: this.node,
-				exports: options.exports || {}
 			});
 		}
-		
-		u('implement')(options.exports, this);
 
 	}, 
 	getDomNode: function() {
@@ -82,18 +79,11 @@ members: {
 		
 		var childElement;
 		
-		if (typeof childConfig.exports === 'undefined') {
-			childConfig.exports = {};
-		}
-		childConfig.exports.getDomNode = null;
-		
 		if (typeof childConfig.name !== 'undefined') {
-			u('create')('dom.Element', childConfig);
+			childElement = u('create')('dom.Element', childConfig);
 		} else {
-			u('create')('dom.Text', childConfig);
+			childElement = u('create')('dom.Text', childConfig);
 		}
-		
-		childElement = childConfig.exports;
 		
 		this.children.push(childElement);
 

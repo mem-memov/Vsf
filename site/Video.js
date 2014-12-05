@@ -13,8 +13,6 @@ members: {
 		this.player = options.player;
 		this.loop = typeof options.loop === 'undefined' ? false : (!!options.loop);
 		this.subtitles = typeof options.subtitles === 'undefined' ? false : options.subtitles;
-		
-		u('implement')(options.exports, this);
 
 	},
 	play: function() {

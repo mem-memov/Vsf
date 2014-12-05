@@ -11,6 +11,7 @@
 	var classFunctions = {};
 	var constructors = {};
 	var singletons = {};
+	var instances = {};
 
 	var loadingClasses = {};
 	var loadingClassesCount = 0;
@@ -77,8 +78,8 @@
 			case 'create':
 				return create;
 				break;
-			case 'implement':
-				return implement;
+			case 'retrieve':
+				return retrieve;
 				break;
 		}
 	}
@@ -156,7 +157,7 @@
 		
 	}
 	
-	function makeClassConstructor(className) { // hiding private methods
+	function makeClassConstructor(className) {
  
 		var classConstructor = function(options) {
 		
@@ -167,6 +168,8 @@
 			var o = new classFunction();
 			o.init(options);
 			o.init = true;
+			
+			return o;
 			
 		}
 		
@@ -211,42 +214,38 @@
 			options = {};
 		}
 		
-		new constructors[className](options);
+		var instance = new constructors[className](options);
+		
+		if (typeof options.instanceId !== 'undefined') {
+			register(options.instanceId, instance);
+		}
 		
 		if (classMetadata[className].singleton) {
-			singletons[className] = options.exports;
-			return options.exports;
+			singletons[className] = instance;
 		}
+		
+		return instance;
 		
 	}
 
-	function implement(exports, instance) {
+	function register(id, instance) {
 		
-		if (typeof exports === 'undefined') {
-			return;
+		if (typeof instances[id] !== 'undefined') {
+			throw 'Conflicting instance ids: ' + id;
+		}
+
+		instances[id] = instance;
+		
+	}
+	
+	function retrieve(id) {
+
+		if (typeof instances[id] === 'undefined') {
+			throw 'Error retrieving instance by id: ' + id;
 		}
 		
-		if (typeof instance === 'undefined') {
-			throw 'Instance not specified for interface export.';
-		}
-	
-		for (var key in exports) {
-			if (!exports.hasOwnProperty(key)) {
-				continue;
-			}
-			if (typeof exports[key] === 'function') { // exported by a mixin
-				continue;
-			}
-			if (typeof instance[key] !== 'function') { // mixing in
-				continue;
-			}
-			(function(exports, instance, key) {
-				exports[key] = function() {
-					return instance[key].apply(instance, arguments);
-				}
-			})(exports, instance, key);
-		}
-	
+		return instances[id];
+		
 	}
 	
 	namespace.Vsf = function(input) {

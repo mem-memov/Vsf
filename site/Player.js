@@ -8,28 +8,11 @@ members: {
 		var me = this;
 		var videoSrc = '';
 		var posterSrc = '';
-		
-		this.videoTitleElement = {
-			changeValue: null
-		};
-		this.overlayElement = {
-			fadeOut: null
-		};
-		this.videoTitleElementContainer = {
-			fadeOut: null,
-			increaseFont: null
-		};
-		this.playerElement = { 
-			getDomNode: null,
-			addListener: null,
-			removeListener: null
-		};
-		this.subtitleElement = {
-			getDomNode: null
-		};
+
 		this.listeners = {};
 
-		var playerConfig = {
+		
+		this.element = u('create')('dom.Element', {
 			name: 'div',
 			exports: {
 				getDomNode: null
@@ -40,7 +23,7 @@ members: {
 			children: [
 				{
 					name: 'video',
-					exports: this.playerElement,
+					instanceId: 'playerElement',
 					attributes: {
 						poster: posterSrc,
 						width: 640,
@@ -56,7 +39,7 @@ members: {
 						},
 						{
 							name: 'track',
-							exports: this.subtitleElement,
+							instanceId: 'subtitleElement',
 							attributes: {
 								src: '',
 								kind: 'subtitles',
@@ -119,7 +102,7 @@ members: {
 				},
 				{
 					name: 'div',
-					exports: this.overlayElement,
+					instanceId: 'overlayElement',
 					animated: true,
 					attributes: {
 						className: 'overlay'
@@ -158,7 +141,7 @@ members: {
 					children: [
 						{
 							name: 'div',
-							exports: this.videoTitleElementContainer,
+							instanceId: 'videoTitleElementContainer',
 							animated: true,
 							attributes: {
 								className: 'title'
@@ -166,30 +149,30 @@ members: {
 							children: [
 								{
 									text: 'Меню сайта',
-									exports: this.videoTitleElement
+									instanceId: 'videoTitleElement'
 								}
 							]
 						}
 					]
 				}
 			]
-		};
-		
-		u('create')('dom.Element', playerConfig);
-		
-		this.element = playerConfig.exports;
+		});
+
+		this.videoTitleElement = u('retrieve')('videoTitleElement');
+		this.overlayElement = u('retrieve')('overlayElement');
+		this.videoTitleElementContainer = u('retrieve')('videoTitleElementContainer');
+		this.playerElement = u('retrieve')('playerElement');
+		this.subtitleElement = u('retrieve')('subtitleElement');
 		
 		u('create')('dom.Document').appendToBody(this.element);
 		
-		u('implement')(options.exports, this);
-		
 	},
 	play: function(title, source, subtitles, loop) {
-
+	
 		this.videoTitleElement.changeValue(title);
-		this.overlayElement.fadeOut();
-		this.videoTitleElementContainer.fadeOut();
-		this.videoTitleElementContainer.increaseFont();
+		this.overlayElement.animation.fadeOut();
+		this.videoTitleElementContainer.animation.fadeOut();
+		this.videoTitleElementContainer.animation.increaseFont();
 		
 		this.subtitleElement.getDomNode().src = '';
 		if (typeof subtitles !== 'undefined' && subtitles !== false) {

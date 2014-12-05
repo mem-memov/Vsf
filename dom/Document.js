@@ -6,15 +6,13 @@ meta: {
 }, 
 members: {
 	init: function(options) {
-		this.body = document.getElementsByTagName('body')[0];
 		
-		options.exports = {
-			appendToBody: null
-		};
-		u('implement')(options.exports, this);
+		this.body = document.getElementsByTagName('body')[0];
 		
 	},
 	appendToBody: function(element) {
+		
 		this.body.appendChild(element.getDomNode());
+		
 	}
 }}});

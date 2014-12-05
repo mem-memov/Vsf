@@ -6,9 +6,7 @@ members: {
 	init: function(options) {
 		
 		this.node = options.node;
-		
-		u('implement')(options.exports, this);
-		
+
 		this.fadeOutAnimationId;
 		this.fontSizeAnimationId;
 		this.fontSize = 50;

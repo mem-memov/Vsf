@@ -10,27 +10,13 @@ members: {
 		this.currentSeriesIndex = this.defaultSeries;
 		
 		this.stack = [this.defaultSeries];
-		var player = {
-			play: null,
-			stop: null
-		};
-		u('create')('site.Player', {
-			exports: player
-		});
+		var player = u('create')('site.Player');
 
 		this.series = [];
 		if (options.series) {
 			for (var i=0, iMax=options.series.length; i<iMax; i++) {
 				options.series[i].player = player;
-				options.series[i].exports = {
-					playNext: null, 
-					playPrevious: null, 
-					playCurrent: null, 
-					stopCurrent: null, 
-					hasTitle: null
-				}
-				u('create')('site.Series', options.series[i]);
-				this.series.push(options.series[i].exports);
+				this.series.push( u('create')('site.Series', options.series[i]) );
 			}
 		}
 
@@ -63,7 +49,6 @@ members: {
 			}
 			this.currentSeriesIndex = this.stack[this.stack.length - 1];
 			this.series[this.currentSeriesIndex].playCurrent();
-			console.log(this.stack);
 		}, this);
 
 		this.series[this.currentSeriesIndex].playCurrent();

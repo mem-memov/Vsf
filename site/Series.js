@@ -15,17 +15,10 @@ members: {
 		if (options.videos) {
 			for (var i=0, iMax=options.videos.length; i<iMax; i++) {
 				options.videos[i].player = options.player;
-				options.videos[i].exports = {
-					play: null,
-					stop: null
-				};
-				u('create')('site.Video', options.videos[i]);
-				this.videos.push(options.videos[i].exports);
+				this.videos.push( u('create')('site.Video', options.videos[i]) );
 				this.videoIndexMax = i;
 			}
 		}
-		
-		u('implement')(options.exports, this);
 
 	},
 	playNext: function() {

@@ -9,12 +9,6 @@ members: {
 	
 		this.topics = {};
 		
-		options.exports = {
-			publish: null,
-			subscribe: null
-		};
-		u('implement')(options.exports, this);
-		
 	},
 	publish: function(topic, info) {
 

@@ -13,8 +13,6 @@ members: {
 		this.node = null;
 		this.buildNode();
 		
-		u('implement')(options.exports, this);
-		
 	}, 
 	getDomNode: function() {
 
