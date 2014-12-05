@@ -66,12 +66,7 @@ At present a class definition looks like this.
 		},
 		doSomthing: function() {
 
-			this.doSomthingInASecretWay();
+			alert('I'm doing something');
 
-		},
-		doSomthingInASecretWay: function() {
-
-			return 'secret';
-			
 		}
 	}}});
