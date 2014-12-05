@@ -1,10 +1,10 @@
 (function(namespace) {
 	/**
 	 * 1. Load site configuration
-	 * 2. Load class  for interpreting the loaded site configuration 
+	 * 2. Load class for interpreting the loaded site configuration 
 	 * 3. Load required classes
 	 * 4. After last class is loaded make component instances
-	 * 5. Initialize private instance properties inside the init method
+	 * 5. Initialize instance properties inside the init method
 	 */
 	var rootUrl = 'js/Vsf/';
 
