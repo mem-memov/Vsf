@@ -1,7 +1,6 @@
 Vsf(function(u) { return {
 meta: {
-	className: 'dom.Text',
-	publicMethodNames: ['getNode']
+	className: 'dom.Text'
 }, 
 members: {
 	init: function(options) {
@@ -14,17 +13,17 @@ members: {
 		this.node = null;
 		this.buildNode();
 		
-		if (typeof options.export !== 'undefined') {
-			var me = this;
-			options.export.changeValue = function(value) {
-				me.node.nodeValue = value;
-			}
-		}
+		u('implement')(options.exports, this);
 		
 	}, 
-	getNode: function() {
-		
+	getDomNode: function() {
+
 		return this.node;
+		
+	},
+	changeValue: function(newValue) {
+	
+		this.node.nodeValue = newValue;
 		
 	},
 	buildNode: function() {

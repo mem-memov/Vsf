@@ -77,6 +77,9 @@
 			case 'create':
 				return create;
 				break;
+			case 'implement':
+				return implement;
+				break;
 		}
 	}
 	
@@ -164,24 +167,6 @@
 			var o = new classFunction();
 			o.init(options);
 			o.init = true;
-
-			// publish methods
-			var out = {};
-			var publicMethodNames = classMetadata[className].publicMethodNames;
-			for (var i=0, iMax=publicMethodNames.length; i < iMax; i++) {
-				var publicMethodName = publicMethodNames[i];
-				if (publicMethodName === 'init') {
-					throw 'The init method of a class cannot be listed among public method names in: ' + className;
-				}
-				out[publicMethodName] = (function(pMN) {
-					var publicMethodName = pMN;
-					return function() {
-						return o[publicMethodName].apply(o, arguments);
-					};
-				})(publicMethodName);
-			}
-			
-			return out;
 			
 		}
 		
@@ -226,16 +211,44 @@
 			options = {};
 		}
 		
-		var newInstance = new constructors[className](options);
+		new constructors[className](options);
 		
 		if (classMetadata[className].singleton) {
-			singletons[className] = newInstance;
+			singletons[className] = options.exports;
+			return options.exports;
 		}
-		
-		return newInstance;
 		
 	}
 
+	function implement(exports, instance) {
+		
+		if (typeof exports === 'undefined') {
+			return;
+		}
+		
+		if (typeof instance === 'undefined') {
+			throw 'Instance not specified for interface export.';
+		}
+	
+		for (var key in exports) {
+			if (!exports.hasOwnProperty(key)) {
+				continue;
+			}
+			if (typeof exports[key] === 'function') { // exported by a mixin
+				continue;
+			}
+			if (typeof instance[key] !== 'function') { // mixing in
+				continue;
+			}
+			(function(exports, instance, key) {
+				exports[key] = function() {
+					return instance[key].apply(instance, arguments);
+				}
+			})(exports, instance, key);
+		}
+	
+	}
+	
 	namespace.Vsf = function(input) {
 	
 		if (typeof input === 'function') {

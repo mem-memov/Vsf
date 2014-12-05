@@ -2,14 +2,19 @@ Vsf(function(u) { return {
 meta: {
 	className: 'dom.Document',
 	singleton: true,
-	requiredClasses: ['dom.Element'],
-	publicMethodNames: ['appendToBody']
+	requiredClasses: ['dom.Element']
 }, 
 members: {
 	init: function(options) {
 		this.body = document.getElementsByTagName('body')[0];
+		
+		options.exports = {
+			appendToBody: null
+		};
+		u('implement')(options.exports, this);
+		
 	},
 	appendToBody: function(element) {
-		this.body.appendChild(element.getNode());
+		this.body.appendChild(element.getDomNode());
 	}
 }}});

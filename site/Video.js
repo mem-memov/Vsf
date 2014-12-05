@@ -1,8 +1,7 @@
 Vsf(function(u) { return {
 meta: {
 	className: 'site.Video',
-	requiredClasses: ['dom.Document'],
-	publicMethodNames: ['play', 'stop']
+	requiredClasses: ['dom.Document']
 }, 
 members: {
 	init: function(options) {
@@ -14,6 +13,8 @@ members: {
 		this.player = options.player;
 		this.loop = typeof options.loop === 'undefined' ? false : (!!options.loop);
 		this.subtitles = typeof options.subtitles === 'undefined' ? false : options.subtitles;
+		
+		u('implement')(options.exports, this);
 
 	},
 	play: function() {

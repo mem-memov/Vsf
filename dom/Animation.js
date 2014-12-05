@@ -7,15 +7,7 @@ members: {
 		
 		this.node = options.node;
 		
-		if (typeof options.export !== 'undefined') {
-			var me = this;
-			options.export.fadeOut = function() {
-				me.fadeOut();
-			};
-			options.export.increaseFont = function() {
-				me.increaseFont();
-			};
-		}
+		u('implement')(options.exports, this);
 		
 		this.fadeOutAnimationId;
 		this.fontSizeAnimationId;

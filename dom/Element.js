@@ -1,8 +1,7 @@
 Vsf(function(u) { return {
 meta: {
 	className: 'dom.Element',
-	requiredClasses: ['dom.Text', 'dom.Animation'],
-	publicMethodNames: ['getNode', 'addListener']
+	requiredClasses: ['dom.Text', 'dom.Animation']
 }, 
 members: {
 	init: function(options) {
@@ -37,52 +36,28 @@ members: {
 		}
 
 		this.children = [];
-		for (var i=0, iMax=this.childConfigs.length; i<iMax; i++) {
-			var childConfig = this.childConfigs[i];
-			if (typeof childConfig.name !== 'undefined') {
-				this.children[i] = u('create')('dom.Element', childConfig);
-			} else {
-				this.children[i] = u('create')('dom.Text', childConfig);
-			}
-		}
-		
 		this.node = null;
 		this.buildNode();
 		
 		if (this.animated) {
 			this.animation = u('create')('dom.Animation', {
 				node: this.node,
-				export: options.export || {}
+				exports: options.exports || {}
 			});
 		}
 		
-		if (typeof options.export !== 'undefined') {
-			var me = this;
-			options.export.getDomNode = function() {
-				return me.node;
-			};
-			options.export.addListener = function(event, listener) {
-				return me.addListener(event, listener);
-			};
-			options.export.removeListener = function(event, listener) {
-				return me.removeListener(event, listener);
-			};
-			options.export.appendChild = function(config) {
-				return me.appendChild(config);
-			};
-			options.export.removeChild = function(childElement) {
-				return me.removeChild(childElement);
-			};
-		}
+		u('implement')(options.exports, this);
 
 	}, 
-	getNode: function() {
+	getDomNode: function() {
+
 		return this.node;
+		
 	},
 	buildNode: function() {
-		
+
 		this.node = document.createElement(this.name);
-		
+
 		for (var attribute in this.attributes) {
 			if (!this.attributes.hasOwnProperty(attribute)) {
 				continue;
@@ -90,8 +65,8 @@ members: {
 			this.node[attribute] = this.attributes[attribute];
 		}
 		
-		for (var i=0, iMax=this.children.length; i<iMax; i++) {
-			this.node.appendChild(this.children[i].getNode());
+		for (var i=0, iMax=this.childConfigs.length; i<iMax; i++) {
+			this.appendChild(this.childConfigs[i]);
 		}
 	
 		for (eventType in this.listeners) {
@@ -104,18 +79,31 @@ members: {
 
 	},
 	appendChild: function(childConfig) {
+		
 		var childElement;
-		if (typeof childConfig.name !== 'undefined') {
-			childElement = u('create')('dom.Element', childConfig);
-		} else {
-			childElement = u('create')('dom.Text', childConfig);
+		
+		if (typeof childConfig.exports === 'undefined') {
+			childConfig.exports = {};
 		}
+		childConfig.exports.getDomNode = null;
+		
+		if (typeof childConfig.name !== 'undefined') {
+			u('create')('dom.Element', childConfig);
+		} else {
+			u('create')('dom.Text', childConfig);
+		}
+		
+		childElement = childConfig.exports;
+		
 		this.children.push(childElement);
-		this.node.appendChild(childElement.getNode());
+
+		this.node.appendChild(childElement.getDomNode());
+		
 		return childElement;
+		
 	},
 	removeChild: function(childElement) {
-		this.node.removeChild(childElement.getNode());
+		this.node.removeChild(childElement.getDomNode());
 	},
 	addListener: function(eventType, listener) {
 	

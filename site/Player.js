@@ -1,8 +1,7 @@
 Vsf(function(u) { return {
 meta: {
 	className: 'site.Player',
-	requiredClasses: ['dom.Document', 'dom.Element'],
-	publicMethodNames: ['play', 'stop']
+	requiredClasses: ['dom.Document', 'dom.Element']
 }, 
 members: {
 	init: function(options) {
@@ -10,34 +9,38 @@ members: {
 		var videoSrc = '';
 		var posterSrc = '';
 		
-		this.videoTitleElement = {};
-		this.overlayElement = {};
-		this.videoTitleElementContainer = {};
-		this.playerElement = {};
-		this.subtitleElement = null;
-		this.subtitleConfig = {
-			name: 'track',
-			attributes: {
-				src: '',
-				kind: 'subtitles',
-				srclang: 'ru',
-				label: 'Russian',
-				'default': 'default',
-				enabled: 'true',
-				type: 'text/vtt'
-			}
+		this.videoTitleElement = {
+			changeValue: null
+		};
+		this.overlayElement = {
+			fadeOut: null
+		};
+		this.videoTitleElementContainer = {
+			fadeOut: null,
+			increaseFont: null
+		};
+		this.playerElement = { 
+			getDomNode: null,
+			addListener: null,
+			removeListener: null
+		};
+		this.subtitleElement = {
+			getDomNode: null
 		};
 		this.listeners = {};
 
-		this.element = u('create')('dom.Element', {
+		var playerConfig = {
 			name: 'div',
+			exports: {
+				getDomNode: null
+			},
 			attributes: {
 				className: 'video-player-container'
 			},
 			children: [
 				{
 					name: 'video',
-					export: this.playerElement,
+					exports: this.playerElement,
 					attributes: {
 						poster: posterSrc,
 						width: 640,
@@ -51,7 +54,19 @@ members: {
 								type: 'video/mp4'
 							}
 						},
-
+						{
+							name: 'track',
+							exports: this.subtitleElement,
+							attributes: {
+								src: '',
+								kind: 'subtitles',
+								srclang: 'ru',
+								label: 'Russian',
+								'default': 'default',
+								enabled: 'true',
+								type: 'text/vtt'
+							}
+						},
 						{
 							name: 'object',
 							attributes: {
@@ -104,7 +119,7 @@ members: {
 				},
 				{
 					name: 'div',
-					export: this.overlayElement,
+					exports: this.overlayElement,
 					animated: true,
 					attributes: {
 						className: 'overlay'
@@ -112,14 +127,13 @@ members: {
 					listeners: {
 						mousewheel: function(event) {
 							var delta = 0;
-							if (!event) /* For IE. */
+							if (!event) // For IE.
 								event = window.event;
-							if (event.wheelDelta) { /* IE/Opera. */
+							if (event.wheelDelta) { // IE/Opera.
 								delta = event.wheelDelta/120;
-							} else if (event.detail) { /** Mozilla case. */
-								/** In Mozilla, sign of delta is different than in IE.
-								* Also, delta is multiple of 3.
-								*/
+							} else if (event.detail) { // Mozilla case. 
+								// In Mozilla, sign of delta is different than in IE.
+								// Also, delta is multiple of 3.
 								delta = -event.detail/3;
 							}
 							if (delta > 0) {
@@ -144,7 +158,7 @@ members: {
 					children: [
 						{
 							name: 'div',
-							export: this.videoTitleElementContainer,
+							exports: this.videoTitleElementContainer,
 							animated: true,
 							attributes: {
 								className: 'title'
@@ -152,16 +166,22 @@ members: {
 							children: [
 								{
 									text: 'Меню сайта',
-									export: this.videoTitleElement
+									exports: this.videoTitleElement
 								}
 							]
 						}
 					]
 				}
 			]
-		});
+		};
+		
+		u('create')('dom.Element', playerConfig);
+		
+		this.element = playerConfig.exports;
 		
 		u('create')('dom.Document').appendToBody(this.element);
+		
+		u('implement')(options.exports, this);
 		
 	},
 	play: function(title, source, subtitles, loop) {
@@ -171,15 +191,11 @@ members: {
 		this.videoTitleElementContainer.fadeOut();
 		this.videoTitleElementContainer.increaseFont();
 		
-		if (this.subtitleElement !== null) {
-			this.playerElement.removeChild(this.subtitleElement);
-			this.subtitleElement = null;
-		}
+		this.subtitleElement.getDomNode().src = '';
 		if (typeof subtitles !== 'undefined' && subtitles !== false) {
-			this.subtitleConfig.attributes.src = subtitles;
-			this.subtitleElement = this.playerElement.appendChild(this.subtitleConfig);
+			this.subtitleElement.getDomNode().src = subtitles;
 		}
-		
+
 		var videoNode = this.playerElement.getDomNode();
 		videoNode.muted = true;
 		videoNode.src = source;

@@ -10,13 +10,27 @@ members: {
 		this.currentSeriesIndex = this.defaultSeries;
 		
 		this.stack = [this.defaultSeries];
-		var player = u('create')('site.Player');
+		var player = {
+			play: null,
+			stop: null
+		};
+		u('create')('site.Player', {
+			exports: player
+		});
 
 		this.series = [];
 		if (options.series) {
 			for (var i=0, iMax=options.series.length; i<iMax; i++) {
 				options.series[i].player = player;
-				this.series.push(u('create')('site.Series', options.series[i]));
+				options.series[i].exports = {
+					playNext: null, 
+					playPrevious: null, 
+					playCurrent: null, 
+					stopCurrent: null, 
+					hasTitle: null
+				}
+				u('create')('site.Series', options.series[i]);
+				this.series.push(options.series[i].exports);
 			}
 		}
 

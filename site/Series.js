@@ -1,8 +1,7 @@
 Vsf(function(u) { return {
 meta: {
 	className: 'site.Series',
-	requiredClasses: ['site.Video'],
-	publicMethodNames: ['playNext', 'playPrevious', 'playCurrent', 'stopCurrent', 'hasTitle']
+	requiredClasses: ['site.Video']
 }, 
 members: {
 	init: function(options) {
@@ -16,11 +15,17 @@ members: {
 		if (options.videos) {
 			for (var i=0, iMax=options.videos.length; i<iMax; i++) {
 				options.videos[i].player = options.player;
-				var video = u('create')('site.Video', options.videos[i]);
-				this.videos.push(video);
+				options.videos[i].exports = {
+					play: null,
+					stop: null
+				};
+				u('create')('site.Video', options.videos[i]);
+				this.videos.push(options.videos[i].exports);
 				this.videoIndexMax = i;
 			}
 		}
+		
+		u('implement')(options.exports, this);
 
 	},
 	playNext: function() {
