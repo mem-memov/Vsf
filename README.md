@@ -11,7 +11,7 @@ Vsf generarates zero garbage in the global namespace. There is a Vfs() function 
 
 Vsf supports no class inheritance. It favours composition.
 
-Vsf doesn't hide class members. It injects duck interfaces and offers a report that contains a list of methods that were required by other classes.
+Vsf doesn't hide class members.
 
 index.html
 
@@ -54,8 +54,7 @@ At present a class definition looks like this.
 	Vsf(function(u) { return {
 	meta: {
 		className: 'my.namespace.MyClass',
-		requiredClasses: ['my.namespace.MyDependency'],
-		publicMethodNames: ['doSomthing']
+		requiredClasses: ['my.namespace.MyDependency']
 	}, 
 	members: {
 		init: function(options) {
