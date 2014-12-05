@@ -119,7 +119,7 @@ members: {
 								// Also, delta is multiple of 3.
 								delta = -event.detail/3;
 							}
-							if (delta > 0) {
+							if (delta < 0) {
 								u('create')('tool.PubSub').publish('next-video');
 							} else {
 								u('create')('tool.PubSub').publish('previous-video');

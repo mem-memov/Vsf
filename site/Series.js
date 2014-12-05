@@ -22,7 +22,7 @@ members: {
 
 	},
 	playNext: function() {
-	
+
 		this.videos[this.currentVideoIndex].stop();
 		this.currentVideoIndex++;
 		if (this.currentVideoIndex > this.videoIndexMax) {
