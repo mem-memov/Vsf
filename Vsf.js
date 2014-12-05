@@ -107,17 +107,11 @@
 		}
 	
 		// set class meta defaults
-		if (typeof meta.publicMethodNames === 'undefined') {
-			meta.publicMethodNames = [];
-		}
 		if (typeof meta.init === 'undefined') { 
 			meta.init = function() {};
 		}
 		if (typeof meta.singleton === 'undefined') {
 			meta.singleton = false;
-		}
-		if (typeof meta.autoCreate === 'undefined') {
-			meta.autoCreate = false;
 		}
 		if (typeof meta.requiredClasses === 'undefined') {
 			meta.requiredClasses = [];
@@ -159,7 +153,7 @@
 	
 	function makeClassConstructor(className) {
  
-		var classConstructor = function(options) {
+		return function(options) {
 		
 			// create constructor function lazily
 			var classFunction = provideClassFunction(className);
@@ -172,9 +166,7 @@
 			return o;
 			
 		}
-		
-		return classConstructor;
-	
+
 	}
 	
 	function provideClassFunction(className) {
@@ -256,7 +248,7 @@
 			loadScript(input); // load site configuration
 		} else if (input.rootUrl) {
 			rootUrl = input.rootUrl;
-		} else {
+		} else { // it's configuration object
 			applyConfiguration(input);
 		}
 
